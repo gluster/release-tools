@@ -64,13 +64,16 @@ function generate_release_notes ()
     echo "" > /tmp/result.txt
     while read line
     do
-          grep $line /tmp/issues-without-label.txt >> /tmp/result.txt
+          grep "#$line" /tmp/issues-without-label.txt >> /tmp/result.txt
     done < /tmp/issue
 
     sed -ri '/^\s*$/d' /tmp/result.txt
     awk '{ $1=$1"](https://github.com/gluster/glusterfs/issues/"$1")" ; print $0 }' /tmp/result.txt  > /tmp/result2.txt
     sed -i 's/#//g' /tmp/result2.txt
     sed -i 's/^/[#/g' /tmp/result2.txt
+
+    sed -i 's/[ \t]*$//' /tmp/result2.txt     # newly added to remove the trailing spaces 
+
     cat /tmp/result2.txt
     
 
@@ -90,7 +93,7 @@ then
   echo;echo "Here is how you can generate a file containing the list of github issues :"
   echo      "fire following commands in the gluster code repository cloned via gh cli :"
   echo;echo "     $ script"
-  echo      "     $ gh issue list -L 600 "
+  echo      "     $ gh issue list -s \"all\" -L 1127"
   echo      "     $ logout"
   echo;echo "In the current directory you should see the typescript" 
   echo      "move this file to /tmp"
